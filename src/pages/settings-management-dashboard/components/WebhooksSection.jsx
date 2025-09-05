@@ -9,6 +9,19 @@ const WebhooksSection = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [webhookUrl, setWebhookUrl] = useState('');
   const [webhookEvents, setWebhookEvents] = useState([]);
+  const [selectedSubBusiness, setSelectedSubBusiness] = useState('');
+  const [allEventsEnabled, setAllEventsEnabled] = useState(false);
+  const [urlError, setUrlError] = useState('');
+
+  // Helper function to validate URL
+  const isValidUrl = (string) => {
+    try {
+      new URL(string);
+      return string.startsWith('http://') || string.startsWith('https://');
+    } catch (err) {
+      return false;
+    }
+  };
 
   const webhooks = [
     {
@@ -61,20 +74,48 @@ const WebhooksSection = () => {
     { value: 'none', label: 'No Retry' }
   ];
 
+  const subBusinessOptions = [
+    { value: 'main', label: 'Main Business' },
+    { value: 'ecommerce', label: 'E-commerce Division' },
+    { value: 'marketplace', label: 'Marketplace Platform' },
+    { value: 'subscription', label: 'Subscription Services' },
+    { value: 'mobile', label: 'Mobile App Division' }
+  ];
+
   const handleCreateWebhook = () => {
+    // Validate URL before creating webhook
+    if (!isValidUrl(webhookUrl)) {
+      setUrlError('Please enter a valid URL');
+      return;
+    }
+    
     // Handle webhook creation logic
-    console.log('Creating webhook:', { webhookUrl, webhookEvents });
+    console.log('Creating webhook:', { webhookUrl, webhookEvents, selectedSubBusiness, allEventsEnabled });
     setShowCreateModal(false);
     setWebhookUrl('');
     setWebhookEvents([]);
+    setSelectedSubBusiness('');
+    setAllEventsEnabled(false);
+    setUrlError('');
   };
 
   const toggleEvent = (eventValue) => {
-    setWebhookEvents(prev => 
-      prev.includes(eventValue) 
-        ? prev.filter(e => e !== eventValue)
-        : [...prev, eventValue]
-    );
+    if (!allEventsEnabled) {
+      setWebhookEvents(prev => 
+        prev.includes(eventValue) 
+          ? prev.filter(e => e !== eventValue)
+          : [...prev, eventValue]
+      );
+    }
+  };
+
+  const handleAllEventsToggle = (enabled) => {
+    setAllEventsEnabled(enabled);
+    if (enabled) {
+      setWebhookEvents(eventTypes.map(event => event.value));
+    } else {
+      setWebhookEvents([]);
+    }
   };
 
   return (
@@ -183,8 +224,14 @@ const WebhooksSection = () => {
 
       {/* Create Webhook Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-card rounded-lg border border-border shadow-elevation max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={() => setShowCreateModal(false)}
+        >
+          <div 
+            className="bg-card rounded-lg border border-border shadow-elevation max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="p-6 border-b border-border">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-foreground">Create New Webhook</h3>
@@ -204,21 +251,66 @@ const WebhooksSection = () => {
                 <Input
                   type="url"
                   value={webhookUrl}
-                  onChange={(e) => setWebhookUrl(e.target.value)}
+                  onChange={(e) => {
+                    setWebhookUrl(e.target.value);
+                    // Clear error when user starts typing a valid URL
+                    if (urlError && e.target.value && isValidUrl(e.target.value)) {
+                      setUrlError('');
+                    }
+                  }}
                   placeholder="https://your-app.com/webhooks/endpoint"
+                  className={urlError ? 'border-red-500' : ''}
+                />
+                {urlError && (
+                  <p className="text-red-500 text-sm mt-1">{urlError}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Sub-Business
+                </label>
+                <Select
+                  options={subBusinessOptions}
+                  value={selectedSubBusiness}
+                  onChange={setSelectedSubBusiness}
+                  placeholder="Select sub-business"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-foreground mb-3">
-                  Event Types
-                </label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto border border-border rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="block text-sm font-medium text-foreground">
+                    Event Types
+                  </label>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm text-muted-foreground">All Events</span>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={allEventsEnabled}
+                        onChange={(e) => handleAllEventsToggle(e.target.checked)}
+                        className="sr-only"
+                      />
+                      <div className={`w-11 h-6 rounded-full transition-colors ${
+                        allEventsEnabled ? 'bg-primary' : 'bg-muted'
+                      }`}>
+                        <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${
+                          allEventsEnabled ? 'translate-x-5' : 'translate-x-0'
+                        } mt-0.5 ml-0.5`}></div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+                <div className={`grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto border border-border rounded-lg p-4 ${
+                  allEventsEnabled ? 'opacity-50 pointer-events-none' : ''
+                }`}>
                   {eventTypes.map((event) => (
                     <div key={event.value} className="flex items-center space-x-2">
                       <Checkbox
                         checked={webhookEvents.includes(event.value)}
                         onChange={() => toggleEvent(event.value)}
+                        disabled={allEventsEnabled}
                       />
                       <label className="text-sm text-foreground">{event.label}</label>
                     </div>
@@ -226,23 +318,12 @@ const WebhooksSection = () => {
                 </div>
               </div>
               
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Retry Policy
-                </label>
-                <Select
-                  options={retryPolicyOptions}
-                  value="exponential"
-                  onChange={() => {}}
-                  placeholder="Select retry policy"
-                />
-              </div>
             </div>
             <div className="p-6 border-t border-border flex justify-end space-x-3">
               <Button variant="outline" onClick={() => setShowCreateModal(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleCreateWebhook} disabled={!webhookUrl || webhookEvents.length === 0}>
+              <Button onClick={handleCreateWebhook} disabled={!webhookUrl || (!allEventsEnabled && webhookEvents.length === 0)}>
                 Create Webhook
               </Button>
             </div>

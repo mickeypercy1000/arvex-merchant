@@ -4,10 +4,11 @@ import ScrollToTop from "components/ScrollToTop";
 import ErrorBoundary from "components/ErrorBoundary";
 // Add your imports here
 import RealTimeTransactionMonitoringDashboard from "pages/real-time-transaction-monitoring-dashboard";
+import Transactions from "pages/transactions";
 import RiskManagementFraudDetectionDashboard from "pages/risk-management-fraud-detection-dashboard";
 import FinancialAnalyticsBusinessIntelligenceDashboard from "pages/financial-analytics-business-intelligence-dashboard";
 import SettingsManagementDashboard from "pages/settings-management-dashboard";
-import PaymentLinkManagementDashboard from "pages/payment-link-management-dashboard";
+import PaymentLinks from "pages/payment-links";
 import ComplianceDocumentManagementDashboard from "pages/compliance-document-management-dashboard";
 import SettlementsManagementDashboard from "pages/settlements-management-dashboard";
 import ChargebacksManagementDashboard from "pages/chargebacks-management-dashboard";
@@ -22,11 +23,11 @@ const Routes = () => {
       <RouterRoutes>
         {/* Define your routes here */}
         <Route path="/" element={<RealTimeTransactionMonitoringDashboard />} />
-        <Route path="/real-time-transaction-monitoring-dashboard" element={<RealTimeTransactionMonitoringDashboard />} />
+        <Route path="/transactions" element={<Transactions />} />
         <Route path="/risk-management-fraud-detection-dashboard" element={<RiskManagementFraudDetectionDashboard />} />
         <Route path="/financial-analytics-business-intelligence-dashboard" element={<FinancialAnalyticsBusinessIntelligenceDashboard />} />
         <Route path="/settings-management-dashboard" element={<SettingsManagementDashboard />} />
-        <Route path="/payment-link-management-dashboard" element={<PaymentLinkManagementDashboard />} />
+        <Route path="/payment-links" element={<PaymentLinks />} />
         <Route path="/compliance-document-management-dashboard" element={<ComplianceDocumentManagementDashboard />} />
         <Route path="/settlements-management-dashboard" element={<SettlementsManagementDashboard />} />
         <Route path="/chargebacks-management-dashboard" element={<ChargebacksManagementDashboard />} />

@@ -7,7 +7,8 @@ import Select from '../../../components/ui/Select';
 const APIKeysSection = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [keyName, setKeyName] = useState('');
-  const [keyPermissions, setKeyPermissions] = useState('read');
+  const [selectedSubBusiness, setSelectedSubBusiness] = useState('');
+  const [selectedEnvironment, setSelectedEnvironment] = useState('test');
 
   const apiKeys = [
     {
@@ -42,19 +43,26 @@ const APIKeysSection = () => {
     }
   ];
 
-  const permissionOptions = [
-    { value: 'read', label: 'Read Only' },
-    { value: 'write', label: 'Read & Write' },
-    { value: 'admin', label: 'Full Access' },
-    { value: 'limited', label: 'Limited Access' }
+  const subBusinessOptions = [
+    { value: 'main', label: 'Main Business' },
+    { value: 'ecommerce', label: 'E-commerce Division' },
+    { value: 'marketplace', label: 'Marketplace Platform' },
+    { value: 'subscription', label: 'Subscription Services' },
+    { value: 'mobile', label: 'Mobile App Division' }
+  ];
+
+  const environmentOptions = [
+    { value: 'test', label: 'Test Environment' },
+    { value: 'live', label: 'Live Environment' }
   ];
 
   const handleCreateKey = () => {
     // Handle API key creation logic
-    console.log('Creating API key:', { keyName, keyPermissions });
+    console.log('Creating API key:', { keyName, selectedSubBusiness, selectedEnvironment });
     setShowCreateModal(false);
     setKeyName('');
-    setKeyPermissions('read');
+    setSelectedSubBusiness('');
+    setSelectedEnvironment('test');
   };
 
   const copyToClipboard = (text) => {
@@ -89,8 +97,6 @@ const APIKeysSection = () => {
                 <th className="text-left py-3 px-4 font-medium text-foreground">Key</th>
                 <th className="text-left py-3 px-4 font-medium text-foreground">Permissions</th>
                 <th className="text-left py-3 px-4 font-medium text-foreground">Created</th>
-                <th className="text-left py-3 px-4 font-medium text-foreground">Last Used</th>
-                <th className="text-left py-3 px-4 font-medium text-foreground">Usage</th>
                 <th className="text-left py-3 px-4 font-medium text-foreground">Status</th>
                 <th className="text-left py-3 px-4 font-medium text-foreground">Actions</th>
               </tr>
@@ -123,8 +129,6 @@ const APIKeysSection = () => {
                     </span>
                   </td>
                   <td className="py-4 px-4 text-muted-foreground">{apiKey.created}</td>
-                  <td className="py-4 px-4 text-muted-foreground">{apiKey.lastUsed}</td>
-                  <td className="py-4 px-4 text-muted-foreground">{apiKey.usage}</td>
                   <td className="py-4 px-4">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                       apiKey.status === 'active' ?'bg-success/10 text-success' :'bg-muted text-muted-foreground'
@@ -148,8 +152,14 @@ const APIKeysSection = () => {
 
       {/* Create API Key Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-card rounded-lg border border-border shadow-elevation max-w-md w-full mx-4">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={() => setShowCreateModal(false)}
+        >
+          <div 
+            className="bg-card rounded-lg border border-border shadow-elevation max-w-md w-full mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="p-6 border-b border-border">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-foreground">Create New API Key</h3>
@@ -174,13 +184,24 @@ const APIKeysSection = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Permissions
+                  Sub-Business
                 </label>
                 <Select
-                  options={permissionOptions}
-                  value={keyPermissions}
-                  onChange={setKeyPermissions}
-                  placeholder="Select permissions"
+                  options={subBusinessOptions}
+                  value={selectedSubBusiness}
+                  onChange={setSelectedSubBusiness}
+                  placeholder="Select sub-business"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Environment
+                </label>
+                <Select
+                  options={environmentOptions}
+                  value={selectedEnvironment}
+                  onChange={setSelectedEnvironment}
+                  placeholder="Select environment"
                 />
               </div>
             </div>

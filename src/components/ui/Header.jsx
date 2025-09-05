@@ -2,18 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Icon from '../AppIcon';
 import Button from './Button';
+import UserAvatar from './UserAvatar';
 
 const Header = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState('connected');
-  const [lastUpdate, setLastUpdate] = useState(new Date());
   const [alertCount, setAlertCount] = useState(3);
 
   const navigationItems = [
     {
-      label: 'Live Monitoring',
-      path: '/real-time-transaction-monitoring-dashboard',
+      label: 'Live Transaction Monitoring',
+      path: '/transactions',
       icon: 'Activity',
       description: 'Real-time transaction monitoring and anomaly detection',
       alertCount: 2
@@ -34,32 +33,6 @@ const Header = () => {
     }
   ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setLastUpdate(new Date());
-    }, 30000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const formatLastUpdate = (date) => {
-    const now = new Date();
-    const diff = Math.floor((now - date) / 1000);
-    
-    if (diff < 60) return 'Just now';
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-    return `${Math.floor(diff / 3600)}h ago`;
-  };
-
-  const getConnectionStatusColor = () => {
-    switch (connectionStatus) {
-      case 'connected': return 'text-success';
-      case 'connecting': return 'text-warning';
-      case 'disconnected': return 'text-error';
-      default: return 'text-muted-foreground';
-    }
-  };
-
   const isActivePath = (path) => location.pathname === path;
 
   const handleNavigation = (path) => {
@@ -77,9 +50,9 @@ const Header = () => {
           </div>
           <div className="flex flex-col">
             <h1 className="text-lg font-semibold text-foreground leading-none">
-              FinTech Analytics
+              Arvexpay
             </h1>
-            <span className="text-xs text-muted-foreground leading-none">
+            <span className="text-xs text-muted-foreground leading-none mt-1">
               Financial Intelligence Platform
             </span>
           </div>
@@ -114,15 +87,17 @@ const Header = () => {
 
         {/* Status Indicators & Mobile Menu */}
         <div className="flex items-center space-x-4">
-          {/* Data Freshness Indicator */}
-          <div className="hidden md:flex items-center space-x-2 text-sm text-muted-foreground">
-            <div className={`w-2 h-2 rounded-full ${getConnectionStatusColor()}`}>
-              <div className={`w-full h-full rounded-full ${connectionStatus === 'connected' ? 'bg-success animate-pulse' : connectionStatus === 'connecting' ? 'bg-warning animate-pulse' : 'bg-error'}`} />
+          {/* User Profile */}
+          {/* <div className="hidden md:flex items-center space-x-3">
+            <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
+              <span className="text-sm font-medium text-primary">JD</span>
             </div>
-            <span className="font-mono text-xs">
-              {formatLastUpdate(lastUpdate)}
-            </span>
-          </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-medium text-foreground">John Doe</span>
+              <span className="text-xs text-muted-foreground">Administrator</span>
+            </div>
+          </div> */}
+          <UserAvatar />
 
           {/* Global Alert Indicator */}
           {alertCount > 0 && (
@@ -185,16 +160,16 @@ const Header = () => {
             ))}
             
             {/* Mobile Status Info */}
-            <div className="flex items-center justify-between pt-4 mt-4 border-t border-border">
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <div className={`w-2 h-2 rounded-full ${getConnectionStatusColor()}`}>
-                  <div className={`w-full h-full rounded-full ${connectionStatus === 'connected' ? 'bg-success animate-pulse' : connectionStatus === 'connecting' ? 'bg-warning animate-pulse' : 'bg-error'}`} />
+            <div className="flex items-center justify-center pt-4 mt-4 border-t border-border">
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
+                  <span className="text-sm font-medium text-primary">JD</span>
                 </div>
-                <span>Connection Status</span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-foreground">John Doe</span>
+                  <span className="text-xs text-muted-foreground">Administrator</span>
+                </div>
               </div>
-              <span className="font-mono text-xs text-muted-foreground">
-                {formatLastUpdate(lastUpdate)}
-              </span>
             </div>
           </nav>
         </div>

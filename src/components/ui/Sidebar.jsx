@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import Icon from '../AppIcon';
 
 const Sidebar = () => {
   const location = useLocation();
+  const [selectedSubBusiness, setSelectedSubBusiness] = useState('main');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const subBusinesses = [
+    { value: 'main', label: 'Main Business' },
+    { value: 'ecommerce', label: 'E-commerce Division' },
+    { value: 'marketplace', label: 'Marketplace Platform' },
+    { value: 'subscription', label: 'Subscription Services' },
+    { value: 'mobile', label: 'Mobile App Division' }
+  ];
 
   const navigationItems = [
     {
@@ -13,7 +23,7 @@ const Sidebar = () => {
     },
     {
       label: 'Transactions', 
-      path: '/real-time-transaction-monitoring-dashboard',
+      path: '/transactions',
       icon: 'CreditCard'
     },
     {
@@ -23,7 +33,7 @@ const Sidebar = () => {
     },
     {
       label: 'Payment Link',
-      path: '/payment-link-management-dashboard',
+      path: '/payment-links',
       icon: 'Link'
     },
     {
@@ -58,10 +68,58 @@ const Sidebar = () => {
   return (
     <div className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-card border-r border-border shadow-elevation z-50">
       <div className="flex flex-col h-full">
-        {/* Sidebar Header */}
+        {/* Sidebar Header - Sub-Business Selector */}
         <div className="p-6 border-b border-border">
-          <h2 className="text-lg font-semibold text-foreground">Navigation</h2>
-          <p className="text-sm text-muted-foreground mt-1">FinTech Analytics Platform</p>
+          <div className="relative">
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-full flex items-center justify-between p-3 bg-muted hover:bg-muted/80 rounded-lg transition-colors"
+            >
+              <div className="flex items-center space-x-3">
+                <Icon name="Building" size={20} className="text-primary" />
+                <div className="text-left">
+                  <h2 className="text-sm font-semibold text-foreground">
+                    {subBusinesses.find(sb => sb.value === selectedSubBusiness)?.label}
+                  </h2>
+                </div>
+              </div>
+              <Icon 
+                name={isDropdownOpen ? "ChevronUp" : "ChevronDown"} 
+                size={16} 
+                className="text-muted-foreground" 
+              />
+            </button>
+
+            {/* Dropdown Menu */}
+            {isDropdownOpen && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg shadow-elevation z-50">
+                {subBusinesses.map((business) => (
+                  <button
+                    key={business.value}
+                    onClick={() => {
+                      setSelectedSubBusiness(business.value);
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`w-full flex items-center space-x-3 p-3 hover:bg-muted transition-colors first:rounded-t-lg last:rounded-b-lg ${
+                      selectedSubBusiness === business.value ? 'bg-primary/10 text-primary' : 'text-foreground'
+                    }`}
+                  >
+                    <Icon 
+                      name="Building" 
+                      size={16} 
+                      className={selectedSubBusiness === business.value ? 'text-primary' : 'text-muted-foreground'} 
+                    />
+                    <div className="text-left">
+                      <div className="text-sm font-medium">{business.label}</div>
+                    </div>
+                    {selectedSubBusiness === business.value && (
+                      <Icon name="Check" size={16} className="text-primary ml-auto" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Navigation Items */}

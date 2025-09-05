@@ -212,9 +212,9 @@ import React, { useState, useEffect } from 'react';
                     </div>
 
                     {/* Urgent Cases Queue */}
-                    <div className="col-span-4">
+                    {/* <div className="col-span-4">
                       <UrgentCasesQueue onViewCase={handleViewCase} />
-                    </div>
+                    </div> */}
                   </div>
 
                   {/* Analytics Section */}

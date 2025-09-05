@@ -8,6 +8,8 @@ const TeamManagementSection = () => {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState('viewer');
+  const [inviteFirstName, setInviteFirstName] = useState('');
+  const [inviteLastName, setInviteLastName] = useState('');
 
   const teamMembers = [
     {
@@ -57,8 +59,10 @@ const TeamManagementSection = () => {
 
   const handleInviteUser = () => {
     // Handle user invitation logic
-    console.log('Inviting user:', { inviteEmail, inviteRole });
+    console.log('Inviting user:', { inviteFirstName, inviteLastName, inviteEmail, inviteRole });
     setShowInviteModal(false);
+    setInviteFirstName('');
+    setInviteLastName('');
     setInviteEmail('');
     setInviteRole('viewer');
   };
@@ -165,8 +169,14 @@ const TeamManagementSection = () => {
 
       {/* Invite Member Modal */}
       {showInviteModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-card rounded-lg border border-border shadow-elevation max-w-md w-full mx-4">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={() => setShowInviteModal(false)}
+        >
+          <div 
+            className="bg-card rounded-lg border border-border shadow-elevation max-w-md w-full mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="p-6 border-b border-border">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-foreground">Invite Team Member</h3>
@@ -179,6 +189,30 @@ const TeamManagementSection = () => {
               </div>
             </div>
             <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    First Name
+                  </label>
+                  <Input
+                    type="text"
+                    value={inviteFirstName}
+                    onChange={(e) => setInviteFirstName(e.target.value)}
+                    placeholder="Enter first name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Last Name
+                  </label>
+                  <Input
+                    type="text"
+                    value={inviteLastName}
+                    onChange={(e) => setInviteLastName(e.target.value)}
+                    placeholder="Enter last name"
+                  />
+                </div>
+              </div>
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
                   Email Address

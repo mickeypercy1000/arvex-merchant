@@ -6,6 +6,14 @@ import Select from '../../../components/ui/Select';
 
 const CompanyProfileSection = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const [showAddSubBusinessModal, setShowAddSubBusinessModal] = useState(false);
+  const [subBusinessData, setSubBusinessData] = useState({
+    name: '',
+    description: '',
+    website: '',
+    email: '',
+    phone: ''
+  });
   const [companyData, setCompanyData] = useState({
     companyName: 'FinTech Analytics Corp',
     website: 'https://fintechanalytics.com',
@@ -55,6 +63,13 @@ const CompanyProfileSection = () => {
     }));
   };
 
+  const handleSubBusinessInputChange = (field, value) => {
+    setSubBusinessData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   const handleSave = () => {
     // Handle save logic
     console.log('Saving company data:', companyData);
@@ -66,6 +81,19 @@ const CompanyProfileSection = () => {
     setIsEditing(false);
   };
 
+  const handleAddSubBusiness = () => {
+    // Handle sub-business creation logic
+    console.log('Adding sub-business:', subBusinessData);
+    setShowAddSubBusinessModal(false);
+    setSubBusinessData({
+      name: '',
+      description: '',
+      website: '',
+      email: '',
+      phone: ''
+    });
+  };
+
   return (
     <div className="bg-card rounded-lg border border-border shadow-elevation">
       <div className="p-6 border-b border-border">
@@ -74,7 +102,7 @@ const CompanyProfileSection = () => {
             <Icon name="Building" size={24} className="text-primary" />
             <h2 className="text-xl font-semibold text-foreground">Company Profile</h2>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             {isEditing ? (
               <>
                 <Button variant="outline" onClick={handleCancel}>
@@ -85,9 +113,14 @@ const CompanyProfileSection = () => {
                 </Button>
               </>
             ) : (
-              <Button onClick={() => setIsEditing(true)} iconName="Edit" iconPosition="left">
-                Edit Profile
-              </Button>
+              <>
+                <Button onClick={() => setIsEditing(true)} iconName="Edit" iconPosition="left">
+                  Edit Profile
+                </Button>
+                <Button variant="outline" iconName="Plus" iconPosition="left" onClick={() => setShowAddSubBusinessModal(true)}>
+                  Add Sub-Business
+                </Button>
+              </>
             )}
           </div>
         </div>
@@ -115,7 +148,7 @@ const CompanyProfileSection = () => {
                       placeholder="Enter company name"
                     />
                   ) : (
-                    <p className="text-foreground bg-muted p-3 rounded-lg">{companyData.companyName}</p>
+                    <p className="text-foreground bg-muted p-3 rounded-lg break-words">{companyData.companyName}</p>
                   )}
                 </div>
 
@@ -131,7 +164,7 @@ const CompanyProfileSection = () => {
                       placeholder="https://your-website.com"
                     />
                   ) : (
-                    <p className="text-foreground bg-muted p-3 rounded-lg">{companyData.website}</p>
+                    <p className="text-foreground bg-muted p-3 rounded-lg break-words">{companyData.website}</p>
                   )}
                 </div>
 
@@ -148,7 +181,7 @@ const CompanyProfileSection = () => {
                         placeholder="Select industry"
                       />
                     ) : (
-                      <p className="text-foreground bg-muted p-3 rounded-lg">
+                      <p className="text-foreground bg-muted p-3 rounded-lg break-words">
                         {industryOptions.find(opt => opt.value === companyData.industry)?.label}
                       </p>
                     )}
@@ -166,7 +199,7 @@ const CompanyProfileSection = () => {
                         placeholder="Select company size"
                       />
                     ) : (
-                      <p className="text-foreground bg-muted p-3 rounded-lg">
+                      <p className="text-foreground bg-muted p-3 rounded-lg break-words">
                         {sizeOptions.find(opt => opt.value === companyData.size)?.label}
                       </p>
                     )}
@@ -186,7 +219,7 @@ const CompanyProfileSection = () => {
                         placeholder="Enter phone number"
                       />
                     ) : (
-                      <p className="text-foreground bg-muted p-3 rounded-lg">{companyData.phone}</p>
+                      <p className="text-foreground bg-muted p-3 rounded-lg break-words">{companyData.phone}</p>
                     )}
                   </div>
 
@@ -202,7 +235,7 @@ const CompanyProfileSection = () => {
                         placeholder="Enter email address"
                       />
                     ) : (
-                      <p className="text-foreground bg-muted p-3 rounded-lg">{companyData.email}</p>
+                      <p className="text-foreground bg-muted p-3 rounded-lg break-words">{companyData.email}</p>
                     )}
                   </div>
                 </div>
@@ -227,7 +260,7 @@ const CompanyProfileSection = () => {
                       placeholder="Enter street address"
                     />
                   ) : (
-                    <p className="text-foreground bg-muted p-3 rounded-lg">{companyData.address}</p>
+                    <p className="text-foreground bg-muted p-3 rounded-lg break-words">{companyData.address}</p>
                   )}
                 </div>
 
@@ -243,7 +276,7 @@ const CompanyProfileSection = () => {
                         placeholder="Enter city"
                       />
                     ) : (
-                      <p className="text-foreground bg-muted p-3 rounded-lg">{companyData.city}</p>
+                      <p className="text-foreground bg-muted p-3 rounded-lg break-words">{companyData.city}</p>
                     )}
                   </div>
 
@@ -258,7 +291,7 @@ const CompanyProfileSection = () => {
                         placeholder="Enter state/province"
                       />
                     ) : (
-                      <p className="text-foreground bg-muted p-3 rounded-lg">{companyData.state}</p>
+                      <p className="text-foreground bg-muted p-3 rounded-lg break-words">{companyData.state}</p>
                     )}
                   </div>
                 </div>
@@ -275,7 +308,7 @@ const CompanyProfileSection = () => {
                         placeholder="Enter ZIP code"
                       />
                     ) : (
-                      <p className="text-foreground bg-muted p-3 rounded-lg">{companyData.zipCode}</p>
+                      <p className="text-foreground bg-muted p-3 rounded-lg break-words">{companyData.zipCode}</p>
                     )}
                   </div>
 
@@ -291,7 +324,7 @@ const CompanyProfileSection = () => {
                         placeholder="Select country"
                       />
                     ) : (
-                      <p className="text-foreground bg-muted p-3 rounded-lg">
+                      <p className="text-foreground bg-muted p-3 rounded-lg break-words">
                         {countryOptions.find(opt => opt.value === companyData.country)?.label}
                       </p>
                     )}
@@ -316,7 +349,7 @@ const CompanyProfileSection = () => {
                       placeholder="Enter tax ID"
                     />
                   ) : (
-                    <p className="text-foreground bg-muted p-3 rounded-lg">{companyData.taxId}</p>
+                    <p className="text-foreground bg-muted p-3 rounded-lg break-words">{companyData.taxId}</p>
                   )}
                 </div>
 
@@ -332,7 +365,7 @@ const CompanyProfileSection = () => {
                       placeholder="Enter billing email"
                     />
                   ) : (
-                    <p className="text-foreground bg-muted p-3 rounded-lg">{companyData.billingEmail}</p>
+                    <p className="text-foreground bg-muted p-3 rounded-lg break-words">{companyData.billingEmail}</p>
                   )}
                 </div>
               </div>
@@ -380,6 +413,102 @@ const CompanyProfileSection = () => {
           </div>
         </div>
       </div>
+
+      {/* Add Sub-Business Modal */}
+      {showAddSubBusinessModal && (
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={() => setShowAddSubBusinessModal(false)}
+        >
+          <div 
+            className="bg-card rounded-lg border border-border shadow-elevation max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6 border-b border-border">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-foreground">Add New Sub-Business</h3>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowAddSubBusinessModal(false)}
+                  iconName="X"
+                />
+              </div>
+            </div>
+            <div className="p-6 space-y-6">
+              {/* Basic Information */}
+              <div>
+                <h4 className="text-md font-medium text-foreground mb-4">Basic Information</h4>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Business Name *
+                    </label>
+                    <Input
+                      value={subBusinessData.name}
+                      onChange={(e) => handleSubBusinessInputChange('name', e.target.value)}
+                      placeholder="Enter sub-business name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Description
+                    </label>
+                    <Input
+                      value={subBusinessData.description}
+                      onChange={(e) => handleSubBusinessInputChange('description', e.target.value)}
+                      placeholder="Brief description of the sub-business"
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        Website
+                      </label>
+                      <Input
+                        type="url"
+                        value={subBusinessData.website}
+                        onChange={(e) => handleSubBusinessInputChange('website', e.target.value)}
+                        placeholder="https://sub-business.com"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        Email
+                      </label>
+                      <Input
+                        type="email"
+                        value={subBusinessData.email}
+                        onChange={(e) => handleSubBusinessInputChange('email', e.target.value)}
+                        placeholder="contact@sub-business.com"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Phone Number
+                    </label>
+                    <Input
+                      type="tel"
+                      value={subBusinessData.phone}
+                      onChange={(e) => handleSubBusinessInputChange('phone', e.target.value)}
+                      placeholder="Enter phone number"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="p-6 border-t border-border flex justify-end space-x-3">
+              <Button variant="outline" onClick={() => setShowAddSubBusinessModal(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleAddSubBusiness}>
+                Add Sub-Business
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

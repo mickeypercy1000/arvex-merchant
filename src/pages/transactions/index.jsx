@@ -8,7 +8,7 @@ import LiveAlertFeed from './components/LiveAlertFeed';
 import TransactionTable from './components/TransactionTable';
 import GlobalControlsBar from './components/GlobalControlsBar';
 
-const RealTimeTransactionMonitoringDashboard = () => {
+const Transactions = () => {
   const [connectionStatus, setConnectionStatus] = useState('connected');
   const [lastUpdate, setLastUpdate] = useState(new Date());
   const [filters, setFilters] = useState({
@@ -220,7 +220,7 @@ const RealTimeTransactionMonitoringDashboard = () => {
   return (
     <>
       <Helmet>
-        <title>Real-Time Transaction Monitoring Dashboard - Arvexpay</title>
+        <title>Real-Time Transaction Monitoring Dashboard - FinTech Analytics</title>
         <meta name="description" content="Monitor live transaction processing, detect anomalies, and track payment performance in real-time with comprehensive analytics and alerts." />
       </Helmet>
 
@@ -239,7 +239,7 @@ const RealTimeTransactionMonitoringDashboard = () => {
             <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <h1 className="text-2xl sm:text-3xl font-semibold text-foreground mb-2 break-words">
-                  Real-Time Dashboard Analytics
+                  Real-Time Transaction Monitoring
                 </h1>
                 <p className="text-sm sm:text-base text-muted-foreground">
                   Monitor live transaction processing, detect anomalies, and track system performance in real-time
@@ -263,82 +263,6 @@ const RealTimeTransactionMonitoringDashboard = () => {
               ))}
             </div>
 
-            {/* Transaction Flow Chart */}
-            <div className="mb-6 sm:mb-8">
-              <TransactionFlowChart 
-                data={chartData}
-                isRealTime={isAutoRefresh}
-              />
-            </div>
-
-            {/* Live Alerts Grid */}
-            <div className="mb-6 sm:mb-8">
-              <div className="bg-card rounded-lg border border-border p-4 sm:p-6">
-                <div className="flex items-center justify-between mb-4 sm:mb-6">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
-                    <h3 className="text-lg font-semibold text-foreground">Live Alerts</h3>
-                  </div>
-                  <span className="text-sm text-muted-foreground">{alertsData.length} active</span>
-                </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 rounded-lg">
-                  {alertsData.map((alert) => {
-                    const getSeverityConfig = (severity) => {
-                      switch (severity) {
-                        case 'critical':
-                          return { color: 'text-error', bgColor: 'bg-error/10', borderColor: 'border-error', icon: 'AlertTriangle' };
-                        case 'warning':
-                          return { color: 'text-warning', bgColor: 'bg-warning/10', borderColor: 'border-warning', icon: 'AlertCircle' };
-                        case 'info':
-                          return { color: 'text-primary', bgColor: 'bg-primary/10', borderColor: 'border-primary', icon: 'Info' };
-                        default:
-                          return { color: 'text-muted-foreground', bgColor: 'bg-muted', borderColor: 'border-border', icon: 'Bell' };
-                      }
-                    };
-                    
-                    const config = getSeverityConfig(alert.severity);
-                    const formatTimeAgo = (timestamp) => {
-                      const now = new Date();
-                      const alertTime = new Date(timestamp);
-                      const diffInSeconds = Math.floor((now - alertTime) / 1000);
-                      
-                      if (diffInSeconds < 60) return `${diffInSeconds}s ago`;
-                      if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
-                      return `${Math.floor(diffInSeconds / 3600)}h ago`;
-                    };
-
-                    return (
-                      <div
-                        key={alert.id}
-                        className={`border rounded-xl p-3 transition-micro hover:shadow-sm ${config.borderColor} ${config.bgColor}`}
-                      >
-                        <div className="flex items-start space-x-2 mb-2">
-                          <div className={`w-2 h-2 rounded-full ${config.color.replace('text-', 'bg-')} mt-2 flex-shrink-0`} />
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-medium text-foreground mb-1 line-clamp-2">
-                              {alert.title}
-                            </h4>
-                            <p className="text-xs text-muted-foreground line-clamp-3">
-                              {alert.message}
-                            </p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center justify-between text-xs">
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${config.bgColor} ${config.color}`}>
-                            {alert.severity.charAt(0).toUpperCase() + alert.severity.slice(1)}
-                          </span>
-                          <span className="text-muted-foreground">
-                            {formatTimeAgo(alert.timestamp)}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
 
             {/* Transaction Table */}
             <TransactionTable
@@ -353,4 +277,4 @@ const RealTimeTransactionMonitoringDashboard = () => {
   );
 };
 
-export default RealTimeTransactionMonitoringDashboard;
+export default Transactions;

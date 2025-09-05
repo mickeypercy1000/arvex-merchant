@@ -9,9 +9,8 @@ import Select from '../../components/ui/Select';
 import PaymentLinksTable from './components/PaymentLinksTable';
 import PaymentAnalytics from './components/PaymentAnalytics';
 import CreateLinkModal from './components/CreateLinkModal';
-import QuickStatsWidget from './components/QuickStatsWidget';
 
-const PaymentLinkManagementDashboard = () => {
+const PaymentLinks = () => {
   const [viewMode, setViewMode] = useState('table'); // table or card
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -145,36 +144,95 @@ const PaymentLinkManagementDashboard = () => {
           </div>
 
           <div className="max-w-7xl mx-auto px-6 py-8">
-            <div className="grid grid-cols-1 xl:grid-cols-16 gap-8">
-              {/* Main Content Area */}
-              <div className="xl:col-span-12">
-                {/* Payment Links Display */}
-                {viewMode === 'table' ? (
-                  <PaymentLinksTable 
-                    searchQuery={searchQuery}
-                    statusFilter={statusFilter}
-                    dateRange={dateRange}
-                  />
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {/* Card view would be implemented here */}
-                    <div className="bg-card rounded-lg border border-border p-6 text-center">
-                      <Icon name="Grid3X3" size={48} className="text-muted-foreground mx-auto mb-4" />
-                      <p className="text-muted-foreground">Card view implementation coming soon</p>
-                    </div>
+            {/* Stats Cards Row */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {/* Quick Stats Card */}
+              <div className="bg-card rounded-lg border border-border p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <Icon name="BarChart3" size={20} className="text-primary" />
+                  <h3 className="text-lg font-semibold text-foreground">Quick Stats</h3>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Total Links</span>
+                    <span className="font-semibold text-foreground">{quickStats.totalLinks}</span>
                   </div>
-                )}
-
-                {/* Analytics Section */}
-                <div className="mt-8">
-                  <PaymentAnalytics dateRange={dateRange} />
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Total Revenue</span>
+                    <span className="font-semibold text-foreground">{quickStats.totalRevenue}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Avg Conversion</span>
+                    <span className="font-semibold text-success">{quickStats.avgConversionRate}</span>
+                  </div>
                 </div>
               </div>
 
-              {/* Right Sidebar */}
-              <div className="xl:col-span-4">
-                <QuickStatsWidget stats={quickStats} />
+              {/* Top Performing Links Card */}
+              <div className="bg-card rounded-lg border border-border p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <Icon name="TrendingUp" size={20} className="text-primary" />
+                  <h3 className="text-lg font-semibold text-foreground">Top Performing</h3>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Best Link</span>
+                    <span className="font-semibold text-foreground">{quickStats.topPerformingLink}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Conversion Rate</span>
+                    <span className="font-semibold text-success">42.9%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Revenue</span>
+                    <span className="font-semibold text-foreground">$12,450</span>
+                  </div>
+                </div>
               </div>
+
+              {/* Recent Activity Card */}
+              <div className="bg-card rounded-lg border border-border p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <Icon name="Activity" size={20} className="text-primary" />
+                  <h3 className="text-lg font-semibold text-foreground">Recent Activity</h3>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Links Created Today</span>
+                    <span className="font-semibold text-foreground">5</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Payments Today</span>
+                    <span className="font-semibold text-foreground">23</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Revenue Today</span>
+                    <span className="font-semibold text-success">$1,847</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Links Display */}
+            {viewMode === 'table' ? (
+              <PaymentLinksTable 
+                searchQuery={searchQuery}
+                statusFilter={statusFilter}
+                dateRange={dateRange}
+              />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Card view would be implemented here */}
+                <div className="bg-card rounded-lg border border-border p-6 text-center">
+                  <Icon name="Grid3X3" size={48} className="text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">Card view implementation coming soon</p>
+                </div>
+              </div>
+            )}
+
+            {/* Analytics Section */}
+            <div className="mt-8">
+              <PaymentAnalytics dateRange={dateRange} />
             </div>
           </div>
         </main>
@@ -190,4 +248,4 @@ const PaymentLinkManagementDashboard = () => {
   );
 };
 
-export default PaymentLinkManagementDashboard;
+export default PaymentLinks;

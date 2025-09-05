@@ -51,42 +51,50 @@ import React from 'react';
             }
           ];
 
-          const getPriorityColor = (priority) => {
+          const getPriorityConfig = (priority) => {
             switch (priority) {
               case 'high':
-                return 'text-destructive bg-destructive/10 border-destructive/20';
+                return { color: 'text-destructive', bgColor: 'bg-destructive/10', label: 'High' };
               case 'medium':
-                return 'text-warning bg-warning/10 border-warning/20';
+                return { color: 'text-warning', bgColor: 'bg-warning/10', label: 'Medium' };
               case 'low':
-                return 'text-muted-foreground bg-muted/10 border-muted/20';
+                return { color: 'text-muted-foreground', bgColor: 'bg-muted/10', label: 'Low' };
               default:
-                return 'text-muted-foreground bg-muted/10 border-muted/20';
+                return { color: 'text-muted-foreground', bgColor: 'bg-muted/10', label: 'Unknown' };
             }
           };
 
-          const getStatusIcon = (status) => {
+          const getStatusConfig = (status) => {
             switch (status) {
               case 'new':
-                return 'AlertCircle';
+                return { color: 'text-primary', bgColor: 'bg-primary/10', label: 'New', icon: 'AlertCircle' };
               case 'under_review':
-                return 'Eye';
+                return { color: 'text-warning', bgColor: 'bg-warning/10', label: 'Under Review', icon: 'Eye' };
               case 'responded':
-                return 'MessageSquare';
+                return { color: 'text-success', bgColor: 'bg-success/10', label: 'Responded', icon: 'MessageSquare' };
               default:
-                return 'Clock';
+                return { color: 'text-muted-foreground', bgColor: 'bg-muted/10', label: status, icon: 'Clock' };
             }
           };
 
-          const getUrgencyIcon = (timeRemaining) => {
-            if (timeRemaining.includes('h') && !timeRemaining.includes('d')) {
-              const hours = parseInt(timeRemaining);
-              if (hours < 4) return 'AlertTriangle';
-            }
-            return 'Clock';
+          const formatAmount = (amount) => {
+            return new Intl.NumberFormat('en-US', {
+              style: 'currency',
+              currency: 'USD'
+            }).format(amount);
+          };
+
+          const formatDeadline = (deadline) => {
+            return new Date(deadline).toLocaleDateString('en-US', { 
+              month: 'short', 
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            });
           };
 
           return (
-            <div className="bg-card border border-border rounded-lg shadow-elevation h-fit">
+            <div className="bg-card border border-border rounded-lg shadow-elevation">
               <div className="p-6 border-b border-border">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-lg font-semibold text-foreground">Urgent Cases</h3>
@@ -98,73 +106,94 @@ import React from 'react';
                 <p className="text-sm text-muted-foreground">Cases requiring immediate attention</p>
               </div>
 
-              <div className="p-4 space-y-4">
-                {urgentCases.map((case_, index) => (
-                  <motion.div
-                    key={case_.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className={`p-4 border rounded-lg transition-all cursor-pointer hover:shadow-md ${getPriorityColor(case_.priority)}`}
-                    onClick={() => onViewCase?.(case_)}
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center space-x-2">
-                        <Icon name={getStatusIcon(case_.status)} size={16} className="text-current" />
-                        <span className="text-sm font-medium text-foreground">{case_.caseId}</span>
-                      </div>
-                      <div className="flex items-center space-x-1 text-current">
-                        <Icon name={getUrgencyIcon(case_.timeRemaining)} size={14} />
-                        <span className="text-xs font-medium">{case_.priority.toUpperCase()}</span>
-                      </div>
-                    </div>
-
-                    <div className="mb-3">
-                      <p className="text-sm font-medium text-foreground mb-1">{case_.merchant}</p>
-                      <p className="text-lg font-bold text-primary">${case_.amount.toLocaleString()}</p>
-                    </div>
-
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-2">
-                        <Icon name="Shield" size={14} className="text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground capitalize">
-                          {case_.reasonCode}
-                        </span>
-                      </div>
-                      <span className="text-xs text-current capitalize">{case_.status.replace('_', ' ')}</span>
-                    </div>
-
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-1">
-                        <Icon name="Timer" size={14} className="text-destructive" />
-                        <span className="text-xs font-medium text-destructive">
-                          {case_.timeRemaining} left
-                        </span>
-                      </div>
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(case_.deadline).toLocaleDateString('en-US', { 
-                          month: 'short', 
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <Button variant="ghost" size="sm" className="flex-1 text-xs">
-                        <Icon name="MessageSquare" size={12} className="mr-1" />
-                        Respond
-                      </Button>
-                      <Button variant="ghost" size="sm" className="p-2 text-muted-foreground">
-                        <Icon name="ArrowUp" size={12} />
-                      </Button>
-                      <Button variant="ghost" size="sm" className="p-2 text-muted-foreground">
-                        <Icon name="MoreHorizontal" size={12} />
-                      </Button>
-                    </div>
-                  </motion.div>
-                ))}
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-muted/50">
+                    <tr>
+                      <th className="text-left p-4 text-sm font-medium text-muted-foreground">Case ID</th>
+                      <th className="text-left p-4 text-sm font-medium text-muted-foreground">Merchant</th>
+                      <th className="text-left p-4 text-sm font-medium text-muted-foreground">Amount</th>
+                      <th className="text-left p-4 text-sm font-medium text-muted-foreground">Reason</th>
+                      <th className="text-left p-4 text-sm font-medium text-muted-foreground">Priority</th>
+                      <th className="text-left p-4 text-sm font-medium text-muted-foreground">Status</th>
+                      <th className="text-left p-4 text-sm font-medium text-muted-foreground">Time Left</th>
+                      <th className="text-left p-4 text-sm font-medium text-muted-foreground">Deadline</th>
+                      <th className="w-20 p-4"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {urgentCases.map((case_) => {
+                      const priorityConfig = getPriorityConfig(case_.priority);
+                      const statusConfig = getStatusConfig(case_.status);
+                      
+                      return (
+                        <tr
+                          key={case_.id}
+                          className="border-b border-border hover:bg-muted/30 transition-micro cursor-pointer"
+                          onClick={() => onViewCase?.(case_)}
+                        >
+                          <td className="p-4">
+                            <div className="font-mono text-sm text-primary font-medium">
+                              {case_.caseId}
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <div className="text-sm text-foreground font-medium">
+                              {case_.merchant}
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <div className="text-sm font-semibold text-foreground">
+                              {formatAmount(case_.amount)}
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <div className="flex items-center space-x-2">
+                              <Icon name="Shield" size={14} className="text-muted-foreground" />
+                              <span className="text-sm text-muted-foreground capitalize">
+                                {case_.reasonCode}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${priorityConfig.bgColor} ${priorityConfig.color}`}>
+                              {priorityConfig.label}
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <div className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${statusConfig.bgColor} ${statusConfig.color}`}>
+                              <Icon name={statusConfig.icon} size={12} />
+                              <span>{statusConfig.label}</span>
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <div className="flex items-center space-x-1">
+                              <Icon name="Timer" size={14} className="text-destructive" />
+                              <span className="text-sm font-medium text-destructive">
+                                {case_.timeRemaining}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <div className="text-sm text-muted-foreground">
+                              {formatDeadline(case_.deadline)}
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <div className="flex items-center space-x-1">
+                              <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <Icon name="MessageSquare" size={14} />
+                              </Button>
+                              <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <Icon name="MoreHorizontal" size={14} />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
 
               <div className="p-4 border-t border-border">

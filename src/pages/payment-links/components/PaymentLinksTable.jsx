@@ -234,30 +234,21 @@ const PaymentLinksTable = ({ searchQuery, statusFilter, dateRange }) => {
                       onClick={() => copyToClipboard(link.url)}
                       iconName="Copy"
                       title="Copy Link"
-                      className="hover:bg-transparent group"
-                    >
-                      <Icon name="Copy" size={16} className="group-hover:text-success transition-colors" />
-                    </Button>
+                    />
                     <Button
                       variant="ghost"
                       size="icon-sm"
                       onClick={() => openLink(link.url)}
                       iconName="ExternalLink"
                       title="Open Link"
-                      className="hover:bg-transparent group"
-                    >
-                      <Icon name="ExternalLink" size={16} className="group-hover:text-success transition-colors" />
-                    </Button>
+                    />
                     <Button
                       variant="ghost"
                       size="icon-sm"
                       onClick={() => editLink(link.id)}
                       iconName="Edit"
                       title="Edit Link"
-                      className="hover:bg-transparent group"
-                    >
-                      <Icon name="Edit" size={16} className="group-hover:text-success transition-colors" />
-                    </Button>
+                    />
                   </div>
                 </td>
               </tr>
