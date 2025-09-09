@@ -12,14 +12,19 @@ import IntegrationSettings from './components/IntegrationSettings';
 import DataManagement from './components/DataManagement';
 import ApiKeyManagement from './components/ApiKeyManagement';
 import TeamManagement from './components/TeamManagement';
+import Teams from './components/Teams';
+import TeamMembers from './components/TeamMembers';
 import WebhookManagement from './components/WebhookManagement';
 import CompanyProfile from './components/CompanyProfile';
 import PasswordReset from './components/PasswordReset';
 
-const SystemConfigurationAndSettings = () => {
+const Settings = () => {
   const { isCollapsed } = useSidebar();
-  const [activeTab, setActiveTab] = useState('general');
+  const [activeTab, setActiveTab] = useState('company-profile');
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [teamSubTab, setTeamSubTab] = useState('team-members');
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [showCreateTeamModal, setShowCreateTeamModal] = useState(false);
 
   const tabs = [
     // {
@@ -113,7 +118,71 @@ const SystemConfigurationAndSettings = () => {
       case 'company-profile':
         return <CompanyProfile />;
       case 'team-management':
-        return <TeamManagement />;
+        return (
+          <div className="w-full">
+            {/* Secondary Tabs for Team Management */}
+            <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0">
+              <div className="bg-muted p-1 rounded-lg inline-flex">
+                <button
+                  onClick={() => setTeamSubTab('team-members')}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                    teamSubTab === 'team-members'
+                      ? 'bg-background text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Team Members
+                </button>
+                <button
+                  onClick={() => setTeamSubTab('teams')}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                    teamSubTab === 'teams'
+                      ? 'bg-background text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Teams
+                </button>
+              </div>
+              
+              {/* Action Buttons */}
+              <div className="flex items-center space-x-3">
+                {teamSubTab === 'team-members' && (
+                  <Button 
+                    onClick={() => setShowInviteModal(true)} 
+                    iconName="UserPlus" 
+                    iconPosition="left"
+                  >
+                    Invite Member
+                  </Button>
+                )}
+                {teamSubTab === 'teams' && (
+                  <Button 
+                    onClick={() => setShowCreateTeamModal(true)} 
+                    iconName="Plus" 
+                    iconPosition="left"
+                  >
+                    Create Team
+                  </Button>
+                )}
+              </div>
+            </div>
+            
+            {/* Secondary Tab Content */}
+            {teamSubTab === 'team-members' && (
+              <TeamMembers 
+                showInviteModal={showInviteModal} 
+                setShowInviteModal={setShowInviteModal} 
+              />
+            )}
+            {teamSubTab === 'teams' && (
+              <Teams 
+                showCreateModal={showCreateTeamModal} 
+                setShowCreateModal={setShowCreateTeamModal} 
+              />
+            )}
+          </div>
+        );
       case 'api-keys':
         return <ApiKeyManagement />;
       case 'webhooks':
@@ -140,18 +209,18 @@ const SystemConfigurationAndSettings = () => {
       <main className={`transition-all duration-300 pt-16 pb-20 md:pb-4 ${
       isCollapsed ? 'ml-0 md:ml-16' : 'ml-0 md:ml-60'}`
       }>
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* Page Header */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
+          <div className="mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 space-y-4 sm:space-y-0">
               <div>
-                <h1 className="font-bold text-foreground mb-2 text-2xl">System Configuration</h1>
-                <p className="text-muted-foreground">
+                <h1 className="font-bold text-foreground mb-2 text-xl sm:text-2xl">System Configuration</h1>
+                <p className="text-muted-foreground text-sm sm:text-base">
                   Manage system settings, integrations, and administrative configurations
                 </p>
               </div>
               
-              <div className="flex items-center space-x-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
                 {hasUnsavedChanges &&
                 <div className="flex items-center space-x-2 px-3 py-2 bg-warning/10 text-warning rounded-lg border border-warning/20">
                     <Icon name="AlertTriangle" size={16} />
@@ -159,33 +228,59 @@ const SystemConfigurationAndSettings = () => {
                   </div>
                 }
                 
-                <Button
-                  variant="outline"
-                  onClick={handleResetAll}
-                  iconName="RotateCcw"
-                  iconPosition="left">
-
-                  Reset All
-                </Button>
-                
-                <Button
-                  variant="default"
-                  onClick={handleSaveAll}
-                  iconName="Save"
-                  iconPosition="left">
-
-                  Save All Changes
-                </Button>
+                <div className="flex space-x-2 sm:space-x-3">
+                  <Button
+                    variant="outline"
+                    onClick={handleResetAll}
+                    iconName="RotateCcw"
+                    iconPosition="left"
+                    size="sm"
+                    className="flex-1 sm:flex-none">
+                    <span className="hidden sm:inline">Reset All</span>
+                    <span className="sm:hidden">Reset</span>
+                  </Button>
+                  
+                  <Button
+                    variant="default"
+                    onClick={handleSaveAll}
+                    iconName="Save"
+                    iconPosition="left"
+                    size="sm"
+                    className="flex-1 sm:flex-none">
+                    <span className="hidden sm:inline">Save All Changes</span>
+                    <span className="sm:hidden">Save</span>
+                  </Button>
+                </div>
               </div>
             </div>
             
           </div>
 
           {/* Configuration Tabs */}
-          <div className="bg-card border border-border rounded-lg">
+          <div className="bg-card border border-border rounded-lg overflow-hidden">
+            {/* Mobile Tab Selector */}
+            <div className="lg:hidden border-b border-border">
+              <div className="p-4">
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Settings Category
+                </label>
+                <select
+                  value={activeTab}
+                  onChange={(e) => handleTabChange(e.target.value)}
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  {tabs?.map((tab) => (
+                    <option key={tab?.id} value={tab?.id}>
+                      {tab?.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             <div className="flex">
-              {/* Vertical Tab Navigation */}
-              <div className="w-80 flex-shrink-0 border-r border-border">
+              {/* Desktop Vertical Tab Navigation */}
+              <div className="hidden lg:block w-80 flex-shrink-0 border-r border-border">
                 <nav className="p-2">
                   {tabs?.map((tab) =>
                   <button
@@ -211,15 +306,19 @@ const SystemConfigurationAndSettings = () => {
               </div>
 
               {/* Tab Content */}
-              <div className="flex-1 p-6">
-                <h2 className="text-lg font-semibold text-foreground mb-2">
-                  {tabs?.find((tab) => tab?.id === activeTab)?.label}
-                </h2>
-                <p className="text-sm text-muted-foreground mb-6">
-                  {tabs?.find((tab) => tab?.id === activeTab)?.description}
-                </p>
-                <hr className="border-border border-1 my-6 w-full" />
-                {renderTabContent()}
+              <div className="flex-1 p-4 sm:p-6">
+                <div className="mb-4 sm:mb-6">
+                  <h2 className="text-lg font-semibold text-foreground mb-2">
+                    {tabs?.find((tab) => tab?.id === activeTab)?.label}
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    {tabs?.find((tab) => tab?.id === activeTab)?.description}
+                  </p>
+                </div>
+                <hr className="border-border border-1 my-4 sm:my-6 w-full" />
+                <div className="w-full">
+                  {renderTabContent()}
+                </div>
               </div>
             </div>
           </div>
@@ -231,4 +330,4 @@ const SystemConfigurationAndSettings = () => {
 
 };
 
-export default SystemConfigurationAndSettings;
+export default Settings;

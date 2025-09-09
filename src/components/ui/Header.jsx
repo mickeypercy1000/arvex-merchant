@@ -2,17 +2,34 @@ import React, { useState } from 'react';
 import Icon from '../AppIcon';
 import Button from './Button';
 import Input from './Input';
+import Select from './Select';
 
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [selectedBusiness, setSelectedBusiness] = useState('main-business');
   const [notifications] = useState([
     { id: 1, title: 'Weekly check-in reminder', message: 'Q4 objectives review due today', time: '2 hours ago', unread: true },
     { id: 2, title: 'Progress update', message: 'Marketing team completed KR milestone', time: '4 hours ago', unread: true },
     { id: 3, title: 'Deadline alert', message: 'Product launch objective due in 3 days', time: '1 day ago', unread: false },
   ]);
+
+  // Business options for the dropdown
+  const businessOptions = [
+    { value: 'main-business', label: 'Arvex Pay (Main)' },
+    { value: 'arvex-lending', label: 'Arvex Lending' },
+    { value: 'arvex-crypto', label: 'Arvex Crypto' },
+    { value: 'arvex-retail', label: 'Arvex Retail Solutions' },
+    { value: 'arvex-enterprise', label: 'Arvex Enterprise' },
+  ];
+
+  const handleBusinessChange = (businessValue) => {
+    setSelectedBusiness(businessValue);
+    console.log('Selected business:', businessValue);
+    // Here you would typically switch context, update global state, etc.
+  };
 
   const handleSearchSubmit = (e) => {
     e?.preventDefault();
@@ -34,16 +51,22 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-card border-b border-border">
       <div className="flex items-center justify-between h-16 px-6">
-        {/* Logo */}
-        <div className="flex items-center">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <Icon name="Target" size={20} color="white" strokeWidth={2.5} />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-lg font-semibold text-foreground">OKR Platform</span>
-              <span className="text-xs text-muted-foreground">Strategic Excellence</span>
-            </div>
+        {/* Logo & Business Selector */}
+        <div className="flex items-center space-x-3">
+          {/* Logo */}
+          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+            <Icon name="Target" size={20} color="white" strokeWidth={2.5} />
+          </div>
+          
+          {/* Business Selector replacing business name */}
+          <div className="min-w-[150px]">
+            <Select
+              options={businessOptions}
+              value={selectedBusiness}
+              onChange={handleBusinessChange}
+              placeholder="Select Business"
+              className="border-0 bg-transparent text-5xl font-semibold"
+            />
           </div>
         </div>
 
@@ -210,7 +233,21 @@ const Header = () => {
       </div>
       {/* Mobile Search Overlay */}
       {isSearchOpen && (
-        <div className="md:hidden border-t border-border bg-card p-4">
+        <div className="md:hidden border-t border-border bg-card p-4 space-y-4">
+          {/* Mobile Business Selector */}
+          <div className="lg:hidden">
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Business Unit
+            </label>
+            <Select
+              options={businessOptions}
+              value={selectedBusiness}
+              onChange={handleBusinessChange}
+              placeholder="Select Business"
+            />
+          </div>
+          
+          {/* Search Form */}
           <form onSubmit={handleSearchSubmit} className="relative">
             <Input
               type="search"

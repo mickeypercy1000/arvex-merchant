@@ -109,7 +109,7 @@ const Sidebar = () => {
         },
         {
           label: 'Settings',
-          path: '/system-configuration-and-settings',
+          path: '/settings',
           icon: 'Settings',
           description: 'System configuration'
         }
@@ -118,7 +118,7 @@ const Sidebar = () => {
   ];
 
   const handleNavigation = (path) => {
-    window.location.href = path;
+    navigate(path);
   };
 
   const isActiveRoute = (path) => {
@@ -200,77 +200,36 @@ const Sidebar = () => {
           </div>
         )}
 
-        {/* Quick Actions - Fixed Bottom */}
-        {!isCollapsed && (
-          <div className="flex-shrink-0 p-4 border-t border-border space-y-4">
-            {/* User Profile Section */}
-            <div className="flex items-center space-x-3 p-3 bg-accent/5 rounded-lg border border-accent/10">
-              <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                <Icon name="User" size={16} className="text-primary" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">
-                  {userData?.first_name || userData?.business_name || 'User'}
-                </p>
-                <p className="text-xs text-muted-foreground truncate">
-                  {userData?.email || ''}
-                </p>
-              </div>
-            </div>
-
-            {/* Logout Button */}
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="w-full justify-start h-9 text-red-600 hover:text-red-700 hover:bg-red-50" 
-              iconName="LogOut" 
-              iconPosition="left"
-              onClick={() => logout(navigate)}
-            >
-              Sign Out
-            </Button>
-
-            <div className="p-3 bg-accent/10 rounded-lg border border-accent/20">
-              <div className="flex items-center space-x-2 mb-2">
-                <Icon name="Zap" size={16} className="text-accent" />
-                <span className="text-sm font-medium text-foreground">Quick Actions</span>
-              </div>
-              <div className="space-y-1">
-                <Button variant="ghost" size="sm" className="w-full justify-start h-8" iconName="Plus" iconPosition="left">
-                  New OKR
-                </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start h-8" iconName="MessageSquare" iconPosition="left">
-                  Check-in
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Sign Out - Fixed Bottom */}
+        <div className="flex-shrink-0 p-4 border-t border-border">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className={`w-full justify-center text-red-600 hover:text-red-700 hover:bg-red-50 ${
+              isCollapsed ? 'px-0' : 'justify-start'
+            }`}
+            iconName="LogOut" 
+            iconPosition="left"
+            onClick={() => logout(navigate)}
+          >
+            {!isCollapsed && 'Sign Out'}
+          </Button>
+        </div>
       </aside>
       {/* Mobile Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border md:hidden">
-        <nav className="flex items-center justify-around py-2">
-          {[
-            { label: 'Dashboard', path: '/', icon: 'Home' },
-            { label: 'Company Overview', path: '/company-okr-dashboard', icon: 'LayoutDashboard' },
-            { label: 'Payments', path: '/payment-links', icon: 'CreditCard' },
-            { label: 'Check-ins', path: '/team-check-ins-and-collaboration', icon: 'Users' },
-            { label: 'Analytics', path: '/analytics-and-reporting-dashboard', icon: 'BarChart3' },
-            { label: 'More', path: '/more', icon: 'MoreHorizontal' }
-          ]?.map((item, index) => (
-            <button
-              key={index}
-              onClick={() => item?.path === '/more' ? console.log('Show more menu') : handleNavigation(item?.path)}
-              className={`flex flex-col items-center space-y-1 px-3 py-2 rounded-lg transition-colors ${
-                isActiveRoute(item?.path)
-                  ? 'text-primary' :'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <Icon name={item?.icon} size={20} />
-              <span className="text-xs font-medium">{item?.label}</span>
-            </button>
-          ))}
-        </nav>
+        <div className="p-4">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="w-full justify-center text-red-600 hover:text-red-700 hover:bg-red-50"
+            iconName="LogOut" 
+            iconPosition="left"
+            onClick={() => logout(navigate)}
+          >
+            Sign Out
+          </Button>
+        </div>
       </div>
     </>
   );

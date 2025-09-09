@@ -84,6 +84,11 @@ export const clearAuthData = () => {
   localStorage.removeItem('authToken');
   localStorage.removeItem('userData');
   localStorage.removeItem('businessId');
+  
+  // Clear session verification state in ProtectedRoute
+  if (window.clearSessionState) {
+    window.clearSessionState();
+  }
 };
 
 /**

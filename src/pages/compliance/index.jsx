@@ -13,6 +13,7 @@ const Compliance = () => {
   const [activeTab, setActiveTab] = useState('upload');
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [dragOver, setDragOver] = useState(false);
+  const [showKycAlert, setShowKycAlert] = useState(true);
 
   // Mock compliance documents data
   const complianceDocuments = [
@@ -140,6 +141,33 @@ const Compliance = () => {
       <main className={`transition-all duration-300 pt-16 pb-20 md:pb-4 ${
         isCollapsed ? 'ml-0 md:ml-16' : 'ml-0 md:ml-60'
       }`}>
+        {/* KYC Alert Sticky Banner */}
+        {showKycAlert && (
+          <div className="sticky top-16 z-40 mx-6 mt-4 mb-4">
+            <div className="bg-warning/10 border border-warning/20 rounded-lg p-4 flex items-center justify-between shadow-lg">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-warning/20 rounded-full">
+                  <Icon name="AlertTriangle" size={20} className="text-warning" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-warning mb-1">KYC Documentation Required</h3>
+                  <p className="text-sm text-yellow-600">
+                    Please upload your KYC documents to continue using all platform features. This is required for compliance and security.
+                  </p>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowKycAlert(false)}
+                className="text-warning"
+              >
+                <Icon name="X" size={18} />
+              </Button>
+            </div>
+          </div>
+        )}
+
         <div className="p-6">
           {/* Page Header */}
           <div className="flex items-center justify-between mb-8">

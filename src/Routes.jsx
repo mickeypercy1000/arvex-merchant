@@ -8,7 +8,7 @@ import NotFound from "pages/NotFound";
 import UserAndPermissionManagement from './pages/user-and-permission-management';
 import AnalyticsAndReportingDashboard from './pages/analytics-and-reporting-dashboard';
 import ProgressTrackingAndUpdates from './pages/progress-tracking-and-updates';
-import SystemConfigurationAndSettings from './pages/system-configuration-and-settings';
+import Settings from './pages/settings';
 import TimelineAndMilestoneManagement from './pages/timeline-and-milestone-management';
 import TeamCheckinsAndCollaboration from './pages/team-check-ins-and-collaboration';
 import ObjectiveCreationAndManagement from './pages/objective-creation-and-management';
@@ -54,9 +54,9 @@ const Routes = () => {
             <ProgressTrackingAndUpdates />
           </ProtectedRoute>
         } />
-        <Route path="/system-configuration-and-settings" element={
+        <Route path="/settings" element={
           <ProtectedRoute>
-            <SystemConfigurationAndSettings />
+            <Settings />
           </ProtectedRoute>
         } />
         <Route path="/timeline-and-milestone-management" element={

@@ -1,12 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { checkAuthStatus, clearAuthData, quickAuthCheck } from '../utils/auth';
+import { checkAuthStatus, clearAuthData, quickAuthCheck, getAuthToken } from '../utils/auth';
+import axios from 'axios';
+
+// Global session state to avoid repeated API calls
+let sessionVerified = false;
+let sessionExpiry = null;
+
+// Expose function to clear session state
+window.clearSessionState = () => {
+  sessionVerified = false;
+  sessionExpiry = null;
+};
 
 const ProtectedRoute = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null); // null = checking, true = authenticated, false = not authenticated
   const [isLoading, setIsLoading] = useState(true);
+  const [kycStatus, setKycStatus] = useState(null);
   const location = useLocation();
+
+  const checkKYCStatus = async () => {
+    try {
+      const token = getAuthToken();
+      const response = await axios.get('https://api.arvexpay.com/api/v1/auth/users/me', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.data.status === 'success') {
+        return response.data.data.kyc_submitted;
+      }
+      return false;
+    } catch (error) {
+      console.error('KYC check failed:', error);
+      return false;
+    }
+  };
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -15,20 +47,43 @@ const ProtectedRoute = ({ children }) => {
         if (!quickAuthCheck()) {
           setIsAuthenticated(false);
           setIsLoading(false);
+          sessionVerified = false;
           return;
         }
 
-        // If token exists, verify with API
+        // Check if session is still valid (verified within last 5 minutes)
+        const now = Date.now();
+        if (sessionVerified && sessionExpiry && now < sessionExpiry) {
+          setIsAuthenticated(true);
+          setIsLoading(false);
+          return;
+        }
+
+        // If token exists but session not verified or expired, verify with API
         const isAuth = await checkAuthStatus();
         setIsAuthenticated(isAuth);
         
-        if (!isAuth) {
+        if (isAuth) {
+          // Mark session as verified for next 5 minutes
+          sessionVerified = true;
+          sessionExpiry = now + (5 * 60 * 1000); // 5 minutes
+          
+          // Check KYC status for dashboard navigation
+          if (location.pathname === '/' || location.pathname === '/dashboard') {
+            const kycSubmitted = await checkKYCStatus();
+            setKycStatus(kycSubmitted);
+          }
+        } else {
+          sessionVerified = false;
+          sessionExpiry = null;
           toast.error('Please log in to access this page.');
         }
       } catch (error) {
         console.error('Authentication check failed:', error);
         clearAuthData();
         setIsAuthenticated(false);
+        sessionVerified = false;
+        sessionExpiry = null;
       } finally {
         setIsLoading(false);
       }
@@ -55,6 +110,11 @@ const ProtectedRoute = ({ children }) => {
   // If not authenticated, redirect to login with the current location
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // If accessing dashboard and KYC not submitted, redirect to compliance
+  if (isAuthenticated && kycStatus === false && (location.pathname === '/' || location.pathname === '/dashboard')) {
+    return <Navigate to="/compliance" replace />;
   }
 
   // If authenticated, render the protected component
