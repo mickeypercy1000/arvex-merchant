@@ -30,13 +30,13 @@ const Select = React.forwardRef(({
     const [searchTerm, setSearchTerm] = useState("");
 
     // Generate unique ID if not provided
-    const selectId = id || `select-${Math.random().toString(36).substr(2, 9)}`;
+    const selectId = id || `select-${Math.random()?.toString(36)?.substr(2, 9)}`;
 
     // Filter options based on search
     const filteredOptions = searchable && searchTerm
-        ? options.filter(option =>
-            option.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (option.value && option.value.toString().toLowerCase().includes(searchTerm.toLowerCase()))
+        ? options?.filter(option =>
+            option?.label?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+            (option?.value && option?.value?.toString()?.toLowerCase()?.includes(searchTerm?.toLowerCase()))
         )
         : options;
 
@@ -45,14 +45,14 @@ const Select = React.forwardRef(({
         if (!value) return placeholder;
 
         if (multiple) {
-            const selectedOptions = options.filter(opt => value.includes(opt.value));
-            if (selectedOptions.length === 0) return placeholder;
-            if (selectedOptions.length === 1) return selectedOptions[0].label;
-            return `${selectedOptions.length} items selected`;
+            const selectedOptions = options?.filter(opt => value?.includes(opt?.value));
+            if (selectedOptions?.length === 0) return placeholder;
+            if (selectedOptions?.length === 1) return selectedOptions?.[0]?.label;
+            return `${selectedOptions?.length} items selected`;
         }
 
-        const selectedOption = options.find(opt => opt.value === value);
-        return selectedOption ? selectedOption.label : placeholder;
+        const selectedOption = options?.find(opt => opt?.value === value);
+        return selectedOption ? selectedOption?.label : placeholder;
     };
 
     const handleToggle = () => {
@@ -69,24 +69,24 @@ const Select = React.forwardRef(({
     const handleOptionSelect = (option) => {
         if (multiple) {
             const newValue = value || [];
-            const updatedValue = newValue.includes(option.value)
-                ? newValue.filter(v => v !== option.value)
-                : [...newValue, option.value];
+            const updatedValue = newValue?.includes(option?.value)
+                ? newValue?.filter(v => v !== option?.value)
+                : [...newValue, option?.value];
             onChange?.(updatedValue);
         } else {
-            onChange?.(option.value);
+            onChange?.(option?.value);
             setIsOpen(false);
             onOpenChange?.(false);
         }
     };
 
     const handleClear = (e) => {
-        e.stopPropagation();
+        e?.stopPropagation();
         onChange?.(multiple ? [] : '');
     };
 
     const handleSearchChange = (e) => {
-        setSearchTerm(e.target.value);
+        setSearchTerm(e?.target?.value);
     };
 
     const isSelected = (optionValue) => {
@@ -112,7 +112,6 @@ const Select = React.forwardRef(({
                     {required && <span className="text-destructive ml-1">*</span>}
                 </label>
             )}
-
             <div className="relative">
                 <button
                     ref={ref}
@@ -165,9 +164,9 @@ const Select = React.forwardRef(({
                     required={required}
                 >
                     <option value="">Select...</option>
-                    {options.map(option => (
-                        <option key={option.value} value={option.value}>
-                            {option.label}
+                    {options?.map(option => (
+                        <option key={option?.value} value={option?.value}>
+                            {option?.label}
                         </option>
                     ))}
                 </select>
@@ -190,28 +189,28 @@ const Select = React.forwardRef(({
                         )}
 
                         <div className="py-1 max-h-60 overflow-auto">
-                            {filteredOptions.length === 0 ? (
+                            {filteredOptions?.length === 0 ? (
                                 <div className="px-3 py-2 text-sm text-muted-foreground">
                                     {searchTerm ? 'No options found' : 'No options available'}
                                 </div>
                             ) : (
-                                filteredOptions.map((option) => (
+                                filteredOptions?.map((option) => (
                                     <div
-                                        key={option.value}
+                                        key={option?.value}
                                         className={cn(
                                             "relative flex cursor-pointer select-none items-center rounded-sm px-3 py-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground",
-                                            isSelected(option.value) && "bg-primary text-primary-foreground",
-                                            option.disabled && "pointer-events-none opacity-50"
+                                            isSelected(option?.value) && "bg-primary text-primary-foreground",
+                                            option?.disabled && "pointer-events-none opacity-50"
                                         )}
-                                        onClick={() => !option.disabled && handleOptionSelect(option)}
+                                        onClick={() => !option?.disabled && handleOptionSelect(option)}
                                     >
-                                        <span className="flex-1">{option.label}</span>
-                                        {multiple && isSelected(option.value) && (
+                                        <span className="flex-1">{option?.label}</span>
+                                        {multiple && isSelected(option?.value) && (
                                             <Check className="h-4 w-4" />
                                         )}
-                                        {option.description && (
+                                        {option?.description && (
                                             <span className="text-xs text-muted-foreground ml-2">
-                                                {option.description}
+                                                {option?.description}
                                             </span>
                                         )}
                                     </div>
@@ -221,13 +220,11 @@ const Select = React.forwardRef(({
                     </div>
                 )}
             </div>
-
             {description && !error && (
                 <p className="text-sm text-muted-foreground mt-1">
                     {description}
                 </p>
             )}
-
             {error && (
                 <p className="text-sm text-destructive mt-1">
                     {error}

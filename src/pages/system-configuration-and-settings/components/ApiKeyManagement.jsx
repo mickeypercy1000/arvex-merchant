@@ -1,0 +1,212 @@
+import React, { useState } from 'react';
+import Icon from '../../../components/AppIcon';
+import Button from '../../../components/ui/Button';
+import Input from '../../../components/ui/Input';
+import Select from '../../../components/ui/Select';
+
+const APIKeysSection = () => {
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [keyName, setKeyName] = useState('');
+  const [selectedSubBusiness, setSelectedSubBusiness] = useState('');
+  const [selectedEnvironment, setSelectedEnvironment] = useState('test');
+
+  const apiKeys = [
+    {
+      id: '1',
+      name: 'Production API Key',
+      key: 'pk_live_51J8X...',
+      permissions: 'Full Access',
+      created: '2025-01-15',
+      lastUsed: '2025-07-20',
+      usage: '1,247 requests',
+      status: 'active'
+    },
+    {
+      id: '2',
+      name: 'Test Environment Key',
+      key: 'pk_test_51J8X...',
+      permissions: 'Read Only',
+      created: '2025-02-10',
+      lastUsed: '2025-07-19',
+      usage: '342 requests',
+      status: 'active'
+    },
+    {
+      id: '3',
+      name: 'Legacy Integration',
+      key: 'pk_live_51H9Y...',
+      permissions: 'Limited',
+      created: '2024-11-22',
+      lastUsed: '2025-06-15',
+      usage: '89 requests',
+      status: 'inactive'
+    }
+  ];
+
+  const subBusinessOptions = [
+    { value: 'main', label: 'Main Business' },
+    { value: 'ecommerce', label: 'E-commerce Division' },
+    { value: 'marketplace', label: 'Marketplace Platform' },
+    { value: 'subscription', label: 'Subscription Services' },
+    { value: 'mobile', label: 'Mobile App Division' }
+  ];
+
+  const environmentOptions = [
+    { value: 'test', label: 'Test Environment' },
+    { value: 'live', label: 'Live Environment' }
+  ];
+
+  const handleCreateKey = () => {
+    // Handle API key creation logic
+    console.log('Creating API key:', { keyName, selectedSubBusiness, selectedEnvironment });
+    setShowCreateModal(false);
+    setKeyName('');
+    setSelectedSubBusiness('');
+    setSelectedEnvironment('test');
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    // Show success message
+  };
+
+  return (
+    <div>
+      {/* Action Buttons */}
+      <div className="flex items-center justify-end space-x-3 mb-6">
+        <Button onClick={() => setShowCreateModal(true)} iconName="Plus" iconPosition="left">
+          Create New Key
+        </Button>
+      </div>
+
+      {/* API Keys Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-border">
+              <th className="text-left py-3 px-4 font-medium text-foreground">Name</th>
+              <th className="text-left py-3 px-4 font-medium text-foreground">Key</th>
+              <th className="text-left py-3 px-4 font-medium text-foreground">Permissions</th>
+              <th className="text-left py-3 px-4 font-medium text-foreground">Created</th>
+              <th className="text-left py-3 px-4 font-medium text-foreground">Status</th>
+              <th className="text-left py-3 px-4 font-medium text-foreground">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {apiKeys.map((apiKey) => (
+              <tr key={apiKey.id} className="border-b border-border hover:bg-muted/50">
+                <td className="py-4 px-4">
+                  <div className="font-medium text-foreground">{apiKey.name}</div>
+                  <div className="text-sm text-muted-foreground">Usage: {apiKey.usage}</div>
+                </td>
+                <td className="py-4 px-4">
+                  <div className="flex items-center space-x-2">
+                    <code className="text-sm bg-muted px-2 py-1 rounded">{apiKey.key}</code>
+                    <Button 
+                      variant="ghost" 
+                      size="icon-sm" 
+                      iconName="Copy" 
+                      title="Copy to clipboard"
+                      onClick={() => copyToClipboard(apiKey.key)}
+                    />
+                  </div>
+                </td>
+                <td className="py-4 px-4">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                    {apiKey.permissions}
+                  </span>
+                </td>
+                <td className="py-4 px-4 text-sm text-muted-foreground">
+                  <div>{apiKey.created}</div>
+                  <div className="text-xs">Last used: {apiKey.lastUsed}</div>
+                </td>
+                <td className="py-4 px-4">
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    apiKey.status === 'active' ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'
+                  }`}>
+                    {apiKey.status.charAt(0).toUpperCase() + apiKey.status.slice(1)}
+                  </span>
+                </td>
+                <td className="py-4 px-4">
+                  <div className="flex items-center space-x-2">
+                    <Button variant="ghost" size="icon-sm" iconName="Edit" title="Edit" />
+                    <Button variant="ghost" size="icon-sm" iconName="Trash2" title="Delete" />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Create API Key Modal */}
+      {showCreateModal && (
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={() => setShowCreateModal(false)}
+        >
+          <div 
+            className="bg-card rounded-lg border border-border shadow-elevation max-w-md w-full mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6 border-b border-border">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-foreground">Create New API Key</h3>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowCreateModal(false)}
+                  iconName="X"
+                />
+              </div>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Key Name
+                </label>
+                <Input
+                  value={keyName}
+                  onChange={(e) => setKeyName(e.target.value)}
+                  placeholder="Enter API key name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Sub-Business
+                </label>
+                <Select
+                  options={subBusinessOptions}
+                  value={selectedSubBusiness}
+                  onChange={setSelectedSubBusiness}
+                  placeholder="Select sub-business"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Environment
+                </label>
+                <Select
+                  options={environmentOptions}
+                  value={selectedEnvironment}
+                  onChange={setSelectedEnvironment}
+                  placeholder="Select environment"
+                />
+              </div>
+            </div>
+            <div className="p-6 border-t border-border flex justify-end space-x-3">
+              <Button variant="outline" onClick={() => setShowCreateModal(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleCreateKey}>
+                Create Key
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default APIKeysSection;

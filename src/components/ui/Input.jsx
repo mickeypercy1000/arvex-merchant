@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "../../utils/cn";
+import Icon from "../AppIcon";
 
 const Input = React.forwardRef(({
     className,
@@ -9,13 +10,28 @@ const Input = React.forwardRef(({
     error,
     required = false,
     id,
+    iconName,
+    iconPosition = "left",
     ...props
 }, ref) => {
     // Generate unique ID if not provided
-    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    const inputId = id || `input-${Math.random()?.toString(36)?.substr(2, 9)}`;
 
     // Base input classes
-    const baseInputClasses = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+    const baseInputClasses = "flex h-12 w-full rounded-lg border-2 border-border bg-background text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors disabled:cursor-not-allowed disabled:opacity-50";
+    
+    // Adjust padding based on icon position
+    const getInputClasses = () => {
+        let paddingClasses = "px-3 py-4";
+        if (iconName) {
+            if (iconPosition === "left") {
+                paddingClasses = "pl-10 pr-3 py-4";
+            } else if (iconPosition === "right") {
+                paddingClasses = "pl-3 pr-10 py-4";
+            }
+        }
+        return `${baseInputClasses} ${paddingClasses}`;
+    };
 
     // Checkbox-specific styles
     if (type === "checkbox") {
@@ -65,17 +81,31 @@ const Input = React.forwardRef(({
                 </label>
             )}
 
-            <input
-                type={type}
-                className={cn(
-                    baseInputClasses,
-                    error && "border-destructive focus-visible:ring-destructive",
-                    className
+            <div className="relative">
+                {iconName && iconPosition === "left" && (
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                        <Icon name={iconName} size={16} />
+                    </div>
                 )}
-                ref={ref}
-                id={inputId}
-                {...props}
-            />
+                
+                <input
+                    type={type}
+                    className={cn(
+                        getInputClasses(),
+                        error && "border-red-500 focus:border-red-500",
+                        className
+                    )}
+                    ref={ref}
+                    id={inputId}
+                    {...props}
+                />
+                
+                {iconName && iconPosition === "right" && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                        <Icon name={iconName} size={16} />
+                    </div>
+                )}
+            </div>
 
             {description && !error && (
                 <p className="text-sm text-muted-foreground">

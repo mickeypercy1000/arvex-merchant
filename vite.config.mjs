@@ -5,26 +5,13 @@ import tagger from "@dhiwise/component-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // This changes the out put dir from dist to build
+  // comment this out if that isn't relevant for your project
   build: {
-    outDir: "dist", // ✅ Needed by Vercel
-    chunkSizeWarningLimit: 3000, // ✅ Avoid chunk size warnings
-    brotliSize: true, // 🧪 Optional: show brotli sizes in logs (doesn't generate files)
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          react: ["react", "react-dom"],
-          ui: ["@radix-ui/themes", "framer-motion"],
-          router: ["react-router-dom"],
-          validation: ["zod", "@hookform/resolvers"],
-        },
-      },
-    },
+    outDir: "build",
+    chunkSizeWarningLimit: 3000,
   },
-  plugins: [
-    tsconfigPaths(),
-    react(),
-    tagger()
-  ],
+  plugins: [tsconfigPaths(), react(), tagger()],
   server: {
     port: "4028",
     host: "0.0.0.0",

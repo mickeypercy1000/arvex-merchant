@@ -29,7 +29,7 @@ const NotFound = () => {
             variant="primary"
             icon={<Icon name="ArrowLeft" />}
             iconPosition="left"
-            onClick={() => window.history.back()}
+            onClick={() => window.history?.back()}
           >
             Go Back
           </Button>
