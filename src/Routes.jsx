@@ -22,6 +22,7 @@ import Signup from './pages/signup';
 import ForgotPassword from './pages/forgot-password';
 import Login from './pages/login';
 import OTPVerification from './pages/otp-verification';
+import AcceptInvitation from './pages/AcceptInvitation';
 import ChargebacksManagementDashboard from "pages/chargebacks-management-dashboard";
 
 
@@ -37,6 +38,7 @@ const Routes = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/otp-verification" element={<OTPVerification />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/members/:id/accept-invitation" element={<AcceptInvitation />} />
         
         {/* Protected routes - authentication required */}
         <Route path="/" element={

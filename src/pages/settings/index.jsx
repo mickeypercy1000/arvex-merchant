@@ -27,12 +27,6 @@ const Settings = () => {
   const [showCreateTeamModal, setShowCreateTeamModal] = useState(false);
 
   const tabs = [
-    // {
-    //   id: 'general',
-    //   label: 'General Settings',
-    //   icon: 'Settings',
-    //   description: 'Company information and system preferences'
-    // },
     {
       id: 'company-profile',
       label: 'Company Profile',
@@ -57,36 +51,18 @@ const Settings = () => {
       icon: 'Webhook',
       description: 'Configure webhook endpoints and events'
     },
-    // {
-    //   id: 'integrations',
-    //   label: 'Integrations',
-    //   icon: 'Zap',
-    //   description: 'Third-party service connections and API settings'
-    // },
     {
       id: 'notifications',
       label: 'Notifications',
       icon: 'Bell',
       description: 'Email templates and notification rules'
     },
-    // {
-    //   id: 'security',
-    //   label: 'Security',
-    //   icon: 'Shield',
-    //   description: 'Authentication, permissions, and audit settings'
-    // },
     {
       id: 'password-change',
       label: 'Change Password',
       icon: 'Lock',
       description: 'Change your password here'
     },
-    // {
-    //   id: 'data',
-    //   label: 'Data Management',
-    //   icon: 'Database',
-    //   description: 'Backup, retention, and export policies'
-    // }
   ];
 
   const handleTabChange = (tabId) => {
@@ -121,11 +97,11 @@ const Settings = () => {
         return (
           <div className="w-full">
             {/* Secondary Tabs for Team Management */}
-            <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0">
-              <div className="bg-muted p-1 rounded-lg inline-flex">
+            <div className="mb-4 sm:mb-6 flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
+              <div className="bg-muted p-1 rounded-lg inline-flex w-full sm:w-auto">
                 <button
                   onClick={() => setTeamSubTab('team-members')}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  className={`flex-1 sm:flex-none px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
                     teamSubTab === 'team-members'
                       ? 'bg-background text-foreground shadow-sm'
                       : 'text-muted-foreground hover:text-foreground'
@@ -135,7 +111,7 @@ const Settings = () => {
                 </button>
                 <button
                   onClick={() => setTeamSubTab('teams')}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  className={`flex-1 sm:flex-none px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
                     teamSubTab === 'teams'
                       ? 'bg-background text-foreground shadow-sm'
                       : 'text-muted-foreground hover:text-foreground'
@@ -146,12 +122,13 @@ const Settings = () => {
               </div>
               
               {/* Action Buttons */}
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-center sm:justify-end">
                 {teamSubTab === 'team-members' && (
                   <Button 
                     onClick={() => setShowInviteModal(true)} 
                     iconName="UserPlus" 
                     iconPosition="left"
+                    className="w-full sm:w-auto text-sm"
                   >
                     Invite Member
                   </Button>
@@ -161,6 +138,7 @@ const Settings = () => {
                     onClick={() => setShowCreateTeamModal(true)} 
                     iconName="Plus" 
                     iconPosition="left"
+                    className="w-full sm:w-auto text-sm"
                   >
                     Create Team
                   </Button>
@@ -187,18 +165,10 @@ const Settings = () => {
         return <ApiKeyManagement />;
       case 'webhooks':
         return <WebhookManagement />;
-      // case 'integrations':
-      //   return <IntegrationSettings />;
       case 'notifications':
         return <NotificationSettings />;
-      // case 'security':
-      //   return <SecuritySettings />;
       case 'password-change':
         return <PasswordReset />;
-      // case 'data':
-      //   return <DataManagement />;
-      // default:
-      //   return <GeneralSettings />;
     }
   };
 
@@ -278,7 +248,7 @@ const Settings = () => {
               </div>
             </div>
 
-            <div className="flex">
+            <div className="flex flex-col lg:flex-row">
               {/* Desktop Vertical Tab Navigation */}
               <div className="hidden lg:block w-80 flex-shrink-0 border-r border-border">
                 <nav className="p-2">
